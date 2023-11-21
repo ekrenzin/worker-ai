@@ -64,7 +64,7 @@ export default {
 
 						//append the image to the chat response
 						chatResponse.message.content = "Here is your image:\n\n" + 
-                                `<p style="display: block; margin-bottom: 0.75rem"><img src=${imageUrl} alt="prompt generated image" /></p>` + 
+                                `<p style="display: block; margin-bottom: 0.75rem"><img src="${imageUrl}" alt="prompt generated image" /></p>` + 
                                 "\n\n" + (chatResponse.message.content || "");
 					} catch (error) {
 						console.error('error generating image', error.message);
