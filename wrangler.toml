@@ -2,6 +2,15 @@ name = "workers-ai"
 main = "src/index.ts"
 compatibility_date = "2023-10-30"
 
+[[r2_buckets]]
+binding = 'WORKER_BUCKET'
+bucket_name = 'workers-ai'
+
+[[d1_databases]]
+binding = "DB" # i.e. available in your Worker on env.DB
+database_name = "ai-messages"
+database_id = "75f7b86c-a03a-473b-89f6-5add0c79ea01"
+
 [ai]
 binding = "AI" # i.e. available in your Worker on env.AI
 

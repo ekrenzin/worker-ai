@@ -10,6 +10,7 @@
     "ngrok": "ngrok http 8787",
     "test": "c8 mocha test",
     "fix": "eslint --fix \"**/*.js\"",
+    "init:db:prod": "wrangler d1 execute ai-messages --file=./schema.sql",
     "lint": "eslint \"**/*.js\"",
     "start": "wrangler dev",
     "publish": "wrangler deploy"
