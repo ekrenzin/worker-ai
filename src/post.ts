@@ -39,8 +39,7 @@ export async function handlePost(request: Request, env: Env) {
 							`<p style="display: block; margin-bottom: 0.75rem"><img src="${imageUrl}" alt="prompt generated image" /></p>` + 
 							"\n\n" + (chatResponse.message.content || "");
 				} catch (error) {
-					console.error('error generating image', error.message);
-					return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+					chatResponse.message.content = `Error generating image. Please try again.`;
 				}
 			}
 		}
@@ -205,16 +204,38 @@ async function generateImage(openai: OpenAIType, prompt: string, env: Env) {
 }
 
 async function uploadToR2(imageData: ArrayBuffer, env: Env): Promise<string> {
-		const bucket = env.WORKER_BUCKET;
-		const fileName = `image-${Date.now()}.png`;
-		const uploadResponse = await bucket.put(fileName, imageData, {
-			contentType: 'image/png',
-			cacheControl: 'public, max-age=31536000',
-		});
-		const imageUrl = `https://workers-ai.eankrenzin.workers.dev/?key=${fileName}`;
-		console.log(`Image uploaded to ${imageUrl}`);
-		return imageUrl;
-	}
+    const bucket = env.WORKER_BUCKET;
+    const fileName = `image-${Date.now()}.png`;
+    let uploadResponse;
+    let retries = 0;
+
+    while (!uploadResponse && retries < 3) {
+        try {
+            uploadResponse = await bucket.put(fileName, imageData, {
+                contentType: 'image/png',
+                cacheControl: 'public, max-age=31536000',
+            });
+        } catch (error) {
+            console.error(`Error uploading image: ${error.message}`);
+            retries++;
+
+            if (retries < 3) {
+                console.log(`Retrying upload...`);
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    if (uploadResponse) {
+        const imageUrl = `https://workers-ai.eankrenzin.workers.dev/?key=${fileName}`;
+        console.log(`Image uploaded to ${imageUrl}`);
+        return imageUrl;
+    } else {
+        throw new Error('Failed to upload image after retries');
+    }
+}
 
 
 /**
