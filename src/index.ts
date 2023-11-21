@@ -181,6 +181,7 @@ async function generateWebsiteResponse(openai: OpenAIType, cleanedMessages: Arra
 async function generateImage(openai: OpenAIType, prompt) {
 	try {
 		const response = await openai.images.generate({
+			model: 'dall-e-3',
 			prompt,
 			n: 1
 		});
