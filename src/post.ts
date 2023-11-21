@@ -39,6 +39,7 @@ export async function handlePost(request: Request, env: Env) {
 							`<p style="display: block; margin-bottom: 0.75rem"><img src="${imageUrl}" alt="prompt generated image" /></p>` + 
 							"\n\n" + (chatResponse.message.content || "");
 				} catch (error) {
+					console.error('error generating image', error.message);
 					chatResponse.message.content = `Error generating image. Please try again.`;
 				}
 			}
