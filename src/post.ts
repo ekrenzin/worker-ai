@@ -149,7 +149,7 @@ return chatCompletion.choices[0];
 * @param {string} websiteContent - Content from the website.
 * @returns {Promise<Response>} - The response to be sent back.
 */
-async function generateWebsiteResponse(openai: OpenAIType, cleanedMessages: Array<message>, functionName: string, websiteContent: string) {
+async function generateWebsiteResponse(openai: OpenAIType, cleanedMessages: Array<Message>, functionName: string, websiteContent: string) {
 const functionMessage: any = {
 	role: "function",
 	name: functionName,
@@ -161,7 +161,6 @@ const webCompletion = await openai.chat.completions.create({
 		...cleanedMessages,
 		functionMessage
 	],
-	functions: []
 });
 const websiteCompletionChoice = webCompletion.choices[0];
 return new Response(JSON.stringify(websiteCompletionChoice.message.content));
@@ -266,6 +265,7 @@ async function readWebsiteContent(url: string) {
 
 	//add these to a single text string
 	const text = paragraphs.text() + spans.text() + headers.text() + links.text() + images.text() + lists.text() + tables.text() + forms.text() + scripts.text() + styles.text() + meta.text() + title.text() + head.text();
+
 	const resp = {
 		website_body: text,
 		url: url
