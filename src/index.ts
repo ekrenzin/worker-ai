@@ -27,15 +27,15 @@ interface message {
 export default {
 
 	async fetch(request: Request, env: Env) {
-		const EAN_API_KEY = env.EAN_API_KEY;
-		if (request.headers.get('x-api-key') !== EAN_API_KEY) {
-			return new Response('Unauthorized', { status: 401 });
-		}
-
 		switch (request.method) {
 			case 'POST':
+				const EAN_API_KEY = env.EAN_API_KEY;
+				if (request.headers.get('x-api-key') !== EAN_API_KEY) {
+					return new Response('Unauthorized', { status: 401 });
+				}
 				return await handlePost(request, env);
 			case 'GET':
+				//always return the image
 				return await handleGet(request, env);
 			default:
 				return new Response('Method not allowed', { status: 405 });
