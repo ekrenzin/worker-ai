@@ -9,6 +9,7 @@ export interface Env {
 	OPENAI_API_KEY: string;
 	WORKER_BUCKET: any;
 	DB: any;
+	EAN_API_KEY: string;
 }
 
 interface message {
@@ -26,6 +27,10 @@ interface message {
 export default {
 
 	async fetch(request: Request, env: Env) {
+		const EAN_API_KEY = env.EAN_API_KEY;
+		if (request.headers.get('x-api-key') !== EAN_API_KEY) {
+			return new Response('Unauthorized', { status: 401 });
+		}
 
 		switch (request.method) {
 			case 'POST':
